@@ -22,9 +22,7 @@ export function AdminSidebar({ profile }: { profile: Profile }) {
   return (
     <aside className="flex w-64 flex-shrink-0 flex-col border-r border-panel-border bg-panel">
       <div className="flex items-center gap-3 border-b border-panel-border px-5 py-5">
-        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-b from-brand-gold to-brand-gold-dark font-display font-bold text-black">
-          R
-        </span>
+        <img src="/logo.svg" alt="RatedWorktops" className="h-9 w-9 rounded-lg" />
         <div className="leading-none">
           <p className="font-display text-sm font-bold text-white">RatedWorktops</p>
           <p className="text-[10px] uppercase tracking-widest text-white/40">Admin Portal</p>

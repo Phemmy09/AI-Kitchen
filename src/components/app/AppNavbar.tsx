@@ -22,9 +22,7 @@ export function AppNavbar({ profile }: { profile: Profile }) {
     <header className="sticky top-0 z-40 border-b border-panel-border bg-[#0a0a0d]/90 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link href="/visualiser" className="flex items-center gap-3">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-b from-brand-gold to-brand-gold-dark font-display font-bold text-black">
-            R
-          </span>
+          <img src="/logo.svg" alt="RatedWorktops" className="h-9 w-9 rounded-lg" />
           <span className="hidden flex-col leading-none sm:flex">
             <span className="font-display text-base font-bold">Rated Worktops</span>
             <span className="text-[10px] uppercase tracking-widest text-white/40">Stone Visualiser</span>

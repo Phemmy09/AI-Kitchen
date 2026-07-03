@@ -1,0 +1,19 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="rw-gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e0bb7d" />
+      <stop offset="1" stop-color="#a9803f" />
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#rw-gold)" />
+  <text
+    x="50%"
+    y="54%"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-weight="700"
+    font-size="150"
+    fill="#0a0a0d"
+  >R</text>
+</svg>

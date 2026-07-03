@@ -5,9 +5,7 @@ export function Footer() {
     <footer className="border-t border-panel-border">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-6 py-12 sm:grid-cols-4">
         <div className="col-span-2 sm:col-span-1">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-b from-brand-gold to-brand-gold-dark font-display font-bold text-black">
-            R
-          </span>
+          <img src="/logo.svg" alt="RatedWorktops" className="h-9 w-9 rounded-lg" />
           <p className="mt-3 font-display text-base font-bold text-white">RatedWorktops</p>
           <p className="mt-2 text-sm text-white/40">
             AI-powered worktop visualisation. See your dream kitchen before it&apos;s built.
