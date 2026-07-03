@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import { LayoutGrid, LineChart, Users, Layers, ListTree, CreditCard, ScrollText, LogOut } from "lucide-react";
 import { signOut } from "@/lib/actions/auth";
 import type { Profile } from "@/lib/data/profile";
@@ -30,27 +31,35 @@ export function AdminSidebar({ profile }: { profile: Profile }) {
       </div>
 
       <nav className="flex-1 space-y-1 px-3 py-4">
-        {NAV.map(({ href, label, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
-              pathname.startsWith(href)
-                ? "bg-brand-gold/10 text-brand-gold"
-                : "text-white/60 hover:bg-white/5 hover:text-white"
-            }`}
-          >
-            <Icon className="h-4 w-4" />
-            {label}
-          </Link>
-        ))}
+        {NAV.map(({ href, label, icon: Icon }) => {
+          const active = pathname.startsWith(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ${
+                active ? "text-brand-gold" : "text-white/60 hover:bg-white/5 hover:text-white"
+              }`}
+            >
+              {active && (
+                <motion.span
+                  layoutId="admin-nav-active"
+                  className="absolute inset-0 rounded-lg bg-brand-gold/10"
+                  transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                />
+              )}
+              <Icon className="relative z-10 h-4 w-4" />
+              <span className="relative z-10">{label}</span>
+            </Link>
+          );
+        })}
       </nav>
 
       <div className="border-t border-panel-border p-4">
         <p className="truncate text-sm font-semibold text-white">{profile.name}</p>
         <p className="truncate text-xs capitalize text-brand-gold">{profile.role.replace("_", " ")}</p>
         <form action={signOut} className="mt-3">
-          <button className="flex items-center gap-2 text-xs text-white/40 hover:text-white">
+          <button className="flex items-center gap-2 text-xs text-white/40 transition-colors hover:text-white">
             <LogOut className="h-3.5 w-3.5" /> Sign out
           </button>
         </form>

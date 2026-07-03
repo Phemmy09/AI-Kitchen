@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { Search, Ban, CheckCircle2, RotateCcw, Trash2 } from "lucide-react";
 import type { AdminUserRow } from "@/lib/data/admin";
 import { suspendUser, unsuspendUser, resetUserCredits, updateUserRole, deleteUserPermanently } from "@/lib/actions/admin/users";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 export function UsersTable({
   users,
@@ -16,6 +17,7 @@ export function UsersTable({
 }) {
   const [search, setSearch] = useState("");
   const [isPending, startTransition] = useTransition();
+  const [pendingDelete, setPendingDelete] = useState<AdminUserRow | null>(null);
 
   const filtered = users.filter(
     (u) =>
@@ -125,12 +127,8 @@ export function UsersTable({
                       <button
                         title="Delete permanently"
                         disabled={isPending}
-                        onClick={() => {
-                          if (window.confirm(`Permanently delete ${u.email}? This cannot be undone.`)) {
-                            startTransition(() => void deleteUserPermanently(u.id));
-                          }
-                        }}
-                        className="rounded-md p-1.5 text-white/40 hover:bg-red-500/10 hover:text-red-400"
+                        onClick={() => setPendingDelete(u)}
+                        className="rounded-md p-1.5 text-white/40 transition-colors hover:bg-red-500/10 hover:text-red-400"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -143,6 +141,18 @@ export function UsersTable({
         </table>
         {filtered.length === 0 && <p className="p-8 text-center text-sm text-white/30">No users match your search.</p>}
       </div>
+
+      <ConfirmModal
+        open={pendingDelete !== null}
+        title="Delete this user?"
+        description={`Permanently delete ${pendingDelete?.email}? This cannot be undone.`}
+        confirmLabel="Delete"
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={() => {
+          if (pendingDelete) startTransition(() => void deleteUserPermanently(pendingDelete.id));
+          setPendingDelete(null);
+        }}
+      />
     </div>
   );
 }

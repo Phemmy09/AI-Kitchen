@@ -145,14 +145,20 @@ export function Workspace({
             <button
               key={colour.id}
               onClick={() => setSelectedColour(colour)}
-              className={`flex items-center gap-3 rounded-lg border p-2 text-left transition ${
+              className={`group flex items-center gap-3 rounded-lg border p-2 text-left transition-all duration-200 active:scale-[0.98] ${
                 selectedColour?.id === colour.id
-                  ? "border-brand-gold bg-brand-gold/10"
-                  : "border-panel-border bg-white/5 hover:bg-white/10"
+                  ? "animate-scale-in border-brand-gold bg-brand-gold/10 shadow-[0_8px_40px_rgba(201,169,110,0.18)]"
+                  : "border-panel-border bg-white/5 hover:-translate-y-0.5 hover:bg-white/10"
               }`}
             >
               <span className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-md bg-white/10">
-                <Image src={colour.texture_url} alt={colour.name} fill className="object-cover" unoptimized />
+                <Image
+                  src={colour.texture_url}
+                  alt={colour.name}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-110"
+                  unoptimized
+                />
               </span>
               <span className="min-w-0">
                 <span className="block truncate text-sm font-medium text-white">{colour.name}</span>
@@ -180,15 +186,15 @@ export function Workspace({
           )}
         </div>
 
-        <div className="flex min-h-[420px] flex-1 items-center justify-center rounded-2xl border border-dashed border-panel-border bg-white/[0.02]">
+        <div className="group flex min-h-[420px] flex-1 items-center justify-center rounded-2xl border border-dashed border-panel-border bg-white/[0.02] transition-colors duration-300 has-[label]:hover:border-[color:var(--border-gold)]">
           {!displayImage ? (
             <label className="flex cursor-pointer flex-col items-center gap-3 p-10 text-center">
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/5">
+              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/5 transition-transform duration-300 group-hover:-translate-y-1">
                 <Upload className="h-6 w-6 text-brand-gold" />
               </span>
               <span className="text-base font-semibold text-white">Upload your kitchen</span>
               <span className="text-sm text-white/40">JPG, PNG or WEBP, up to 10MB</span>
-              <span className="mt-2 rounded-lg bg-gradient-to-b from-brand-gold to-brand-gold-dark px-5 py-2.5 text-sm font-semibold text-black">
+              <span className="mt-2 rounded-lg bg-gradient-to-b from-brand-gold to-brand-gold-dark px-5 py-2.5 text-sm font-semibold text-black shadow-[0_2px_12px_rgba(201,169,110,0.3)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_40px_rgba(201,169,110,0.18)]">
                 Choose file
               </span>
               <input
@@ -203,9 +209,11 @@ export function Workspace({
             <div className="relative h-full w-full">
               <img src={displayImage} alt="Kitchen preview" className="max-h-[70vh] w-full rounded-2xl object-contain" />
               {isGenerating && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-2xl bg-black/70">
-                  <Loader2 className="h-8 w-8 animate-spin text-brand-gold" />
-                  <p className="text-sm text-white/70">Detecting surfaces & rendering stone...</p>
+                <div className="animate-scale-in absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-2xl bg-black/70 backdrop-blur-sm">
+                  <div className="pulse-ring flex h-14 w-14 items-center justify-center rounded-full bg-brand-gold/10">
+                    <Loader2 className="h-6 w-6 animate-spin text-brand-gold" />
+                  </div>
+                  <p className="text-sm text-white/70">Detecting surfaces &amp; rendering stone...</p>
                 </div>
               )}
             </div>

@@ -1,18 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0d;
-  --foreground: #f5f5f4;
-  --brand-gold: #caa15d;
-  --brand-gold-dark: #a9803f;
-  --panel: #131318;
-  --panel-border: #232329;
+  --background: #09090f;
+  --foreground: #f4f0ea;
+  --brand-gold: #c9a96e;
+  --brand-gold-light: #e2c99a;
+  --brand-gold-dark: #a07840;
+  --brand-gold-glow: rgba(201, 169, 110, 0.18);
+  --panel: #0f0f18;
+  --panel-border: rgba(255, 255, 255, 0.07);
+  --border-gold: rgba(201, 169, 110, 0.25);
+  --shadow-gold: 0 8px 40px rgba(201, 169, 110, 0.18);
+  --shadow-card: 0 4px 32px rgba(0, 0, 0, 0.5);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-brand-gold: var(--brand-gold);
+  --color-brand-gold-light: var(--brand-gold-light);
   --color-brand-gold-dark: var(--brand-gold-dark);
   --color-panel: var(--panel);
   --color-panel-border: var(--panel-border);
@@ -21,11 +28,154 @@
   --font-display: var(--font-playfair);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
 }
 
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+}
+
 .admin-input {
-  @apply rounded-md border border-panel-border bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-brand-gold;
+  @apply rounded-md border border-panel-border bg-white/5 px-3 py-2 text-sm text-white outline-none transition-all duration-200 focus:border-brand-gold;
+}
+
+/* ── Animations, ported from the client's original design system ───── */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.6s var(--ease-standard) both;
+}
+.fade-up-2 {
+  animation: fadeUp 0.6s 0.15s var(--ease-standard) both;
+}
+.fade-up-3 {
+  animation: fadeUp 0.6s 0.3s var(--ease-standard) both;
+}
+.fade-up-4 {
+  animation: fadeUp 0.6s 0.45s var(--ease-standard) both;
+}
+
+.animate-slide-in {
+  animation: slideInRight 0.3s var(--ease-standard);
+}
+.animate-scale-in {
+  animation: scaleIn 0.2s var(--ease-standard);
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.09) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.pulse-ring {
+  position: relative;
+}
+.pulse-ring::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid var(--brand-gold);
+  animation: pulseRing 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Gold top-edge sweep that fades in on hover, e.g. stat cards */
+.gold-edge {
+  position: relative;
+  overflow: hidden;
+}
+.gold-edge::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--brand-gold), transparent);
+  opacity: 0;
+  transition: opacity 0.22s var(--ease-standard);
+}
+.gold-edge:hover::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -88,7 +88,7 @@ export function StoneGrid({ categories, brands }: { categories: Category[]; bran
           <Link
             key={colour.id}
             href={`/visualiser?stone=${colour.id}`}
-            className="group overflow-hidden rounded-xl border border-panel-border bg-white/5 transition hover:border-brand-gold"
+            className="group overflow-hidden rounded-xl border border-panel-border bg-white/5 transition-all duration-200 hover:-translate-y-1 hover:border-[color:var(--border-gold)] hover:shadow-[0_8px_40px_rgba(201,169,110,0.18)]"
           >
             <div className="relative aspect-square w-full overflow-hidden">
               <Image
@@ -96,7 +96,7 @@ export function StoneGrid({ categories, brands }: { categories: Category[]; bran
                 alt={colour.name}
                 fill
                 unoptimized
-                className="object-cover transition duration-300 group-hover:scale-105"
+                className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
               />
             </div>
             <div className="p-3">

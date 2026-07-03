@@ -12,12 +12,14 @@ import {
   deleteColour,
   bulkCreateColours,
 } from "@/lib/actions/admin/stones";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 export function StoneLibraryManager({ categories, brands }: { categories: Category[]; brands: Brand[] }) {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [showAddBrand, setShowAddBrand] = useState(false);
   const [showBulk, setShowBulk] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [pendingDeleteBrand, setPendingDeleteBrand] = useState<Brand | null>(null);
 
   return (
     <div className="mt-6">
@@ -119,12 +121,8 @@ export function StoneLibraryManager({ categories, brands }: { categories: Catego
                   </button>
                   <button
                     disabled={isPending}
-                    onClick={() => {
-                      if (window.confirm(`Delete ${brand.name} and all its colours?`)) {
-                        startTransition(() => void deleteBrand(brand.id));
-                      }
-                    }}
-                    className="flex items-center gap-1.5 rounded-md border border-red-500/30 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10"
+                    onClick={() => setPendingDeleteBrand(brand)}
+                    className="flex items-center gap-1.5 rounded-md border border-red-500/30 px-3 py-1.5 text-xs text-red-400 transition-colors hover:bg-red-500/10"
                   >
                     <Trash2 className="h-3.5 w-3.5" /> Delete brand
                   </button>
@@ -170,6 +168,18 @@ export function StoneLibraryManager({ categories, brands }: { categories: Catego
           </div>
         ))}
       </div>
+
+      <ConfirmModal
+        open={pendingDeleteBrand !== null}
+        title="Delete this brand?"
+        description={`Delete ${pendingDeleteBrand?.name} and all its colours? This cannot be undone.`}
+        confirmLabel="Delete"
+        onCancel={() => setPendingDeleteBrand(null)}
+        onConfirm={() => {
+          if (pendingDeleteBrand) startTransition(() => void deleteBrand(pendingDeleteBrand.id));
+          setPendingDeleteBrand(null);
+        }}
+      />
     </div>
   );
 }
