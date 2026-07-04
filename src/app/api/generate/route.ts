@@ -100,17 +100,20 @@ export async function POST(request: NextRequest) {
     const resultBuffer = Buffer.from(result.base64, "base64");
     const watermarkedBuffer = await applyWatermark(resultBuffer);
 
+    const resultMime = result.mimeType;
+    const resultExt = resultMime === "image/png" ? "png" : resultMime === "image/webp" ? "webp" : "jpg";
+
     const ext = image.type === "image/png" ? "png" : "jpg";
     const uploadPath = `${user.id}/${randomUUID()}.${ext}`;
-    const resultPath = `${user.id}/${randomUUID()}.png`;
-    const watermarkedPath = `${user.id}/${randomUUID()}-wm.jpg`;
+    const resultPath = `${user.id}/${randomUUID()}.${resultExt}`;
+    const watermarkedPath = `${user.id}/${randomUUID()}-wm.${resultExt}`;
 
     const [uploadRes, renderRes, watermarkedRes] = await Promise.all([
       supabase.storage.from("uploads").upload(uploadPath, sourceImage.buffer, { contentType: image.type }),
-      supabase.storage.from("renders").upload(resultPath, resultBuffer, { contentType: result.mimeType }),
+      supabase.storage.from("renders").upload(resultPath, resultBuffer, { contentType: resultMime }),
       supabase.storage
         .from("renders")
-        .upload(watermarkedPath, watermarkedBuffer, { contentType: "image/jpeg" }),
+        .upload(watermarkedPath, watermarkedBuffer, { contentType: resultMime }),
     ]);
 
     if (uploadRes.error || renderRes.error || watermarkedRes.error) {

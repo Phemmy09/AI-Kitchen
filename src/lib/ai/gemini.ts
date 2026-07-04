@@ -30,10 +30,13 @@ export async function generateStoneSwap(params: {
 
   const prompt = [
     "You are editing a real photo of a kitchen for a stone worktop retailer.",
-    "Automatically detect the kitchen worktop (countertop) surfaces, the splashback/backsplash wall, and any kitchen island surface in the first image.",
-    `Replace those surfaces only with the exact stone material shown in the second reference image ("${params.stoneName}"), tiling/aligning the stone pattern naturally across each surface.`,
-    "Preserve the original photo's perspective, lighting, shadows and reflections so the result looks photorealistic - do not alter cabinets, walls, appliances, floor, or anything that is not a worktop/splashback/island surface.",
-    params.refinement?.trim() ? `Additional instruction from the customer: ${params.refinement.trim()}` : "",
+    "Your primary goal is to replace both the worktop (countertop/island) slabs and the backsplash walls with the new stone material.",
+    `By default, automatically detect all kitchen worktop (countertop) slabs, kitchen island slabs, and splashback/backsplash wall areas in the first image, and replace all of these areas with the exact stone material shown in the second reference image ("${params.stoneName}").`,
+    "Ensure the stone pattern is naturally tiled and aligned across all replaced surfaces.",
+    "Preserve the original kitchen photo's perspective, cabinets, floor, appliances, lighting, shadows, and reflections so the result looks photorealistic.",
+    params.refinement?.trim()
+      ? `Important customer instructions that override the default replacement behavior: ${params.refinement.trim()}`
+      : "",
     "Return only the edited photo.",
   ]
     .filter(Boolean)

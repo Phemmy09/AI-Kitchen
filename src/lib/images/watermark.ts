@@ -7,7 +7,7 @@ import sharp from "sharp";
 // once the client provides brand assets.
 export async function applyWatermark(imageBuffer: Buffer): Promise<Buffer> {
   const image = sharp(imageBuffer);
-  const { width = 1200, height = 900 } = await image.metadata();
+  const { width = 1200, height = 900, format } = await image.metadata();
 
   const barHeight = Math.round(height * 0.07);
   const label = "Created with RatedWorktops";
@@ -55,8 +55,13 @@ export async function applyWatermark(imageBuffer: Buffer): Promise<Buffer> {
     </svg>
   `;
 
-  return image
-    .composite([{ input: Buffer.from(svg), top: 0, left: 0 }])
-    .jpeg({ quality: 92 })
-    .toBuffer();
+  const composite = image.composite([{ input: Buffer.from(svg), top: 0, left: 0 }]);
+
+  if (format === "png") {
+    return composite.png({ compressionLevel: 9 }).toBuffer();
+  }
+  if (format === "webp") {
+    return composite.webp({ quality: 100, lossless: true }).toBuffer();
+  }
+  return composite.jpeg({ quality: 100, chromaSubsampling: "4:4:4" }).toBuffer();
 }
