@@ -36,9 +36,12 @@ export function Footer() {
         />
       </div>
       <div className="border-t border-panel-border px-6 py-4">
-        <p className="mx-auto max-w-7xl text-xs text-white/30">
-          © {new Date().getFullYear()} RatedWorktops. All rights reserved.
-        </p>
+        <div className="mx-auto flex max-w-7xl items-center justify-between text-xs text-white/30">
+          <p>© {new Date().getFullYear()} RatedWorktops. All rights reserved.</p>
+          <p>
+            Made with <span className="text-red-400">♥</span> in the UK
+          </p>
+        </div>
       </div>
     </footer>
   );

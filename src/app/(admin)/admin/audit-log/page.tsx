@@ -16,6 +16,7 @@ const ACTION_LABELS: Record<string, string> = {
   delete_colour: "Deleted colour",
   bulk_create_colours: "Bulk imported colours",
   create_category: "Created category",
+  update_category: "Updated category",
   enable_category: "Enabled category",
   disable_category: "Disabled category",
   delete_category: "Deleted category",

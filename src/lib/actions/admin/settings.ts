@@ -8,10 +8,14 @@ export async function updatePlatformSettings(formData: FormData): Promise<AdminA
   try {
     const ctx = await requireAdminContext({ superAdminOnly: true });
 
+    const currency = String(formData.get("currency") ?? "gbp");
+    if (!["gbp", "usd"].includes(currency)) return { error: "Invalid currency." };
+
     const updates = {
       free_credits_enabled: formData.get("free_credits_enabled") === "on",
       subscriptions_enabled: formData.get("subscriptions_enabled") === "on",
       free_credit_amount: Number(formData.get("free_credit_amount")),
+      currency,
       monthly_price_cents: Math.round(Number(formData.get("monthly_price")) * 100),
       monthly_credits: Number(formData.get("monthly_credits")),
       annual_price_cents: Math.round(Number(formData.get("annual_price")) * 100),

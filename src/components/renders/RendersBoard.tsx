@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Bookmark, BookmarkX, Trash2, Clock, FolderOpen, Plus, Download } from "lucide-react";
 import type { RenderRow } from "@/lib/data/renders";
 import { saveRender, unsaveRender, deleteRender } from "@/lib/actions/renders";
+import { logDownload } from "@/lib/actions/downloads";
 import { ShareMenu } from "@/components/share/ShareMenu";
 
 function hoursUntil(iso: string) {
@@ -69,6 +70,7 @@ export function RendersBoard({
                         href={render.watermarked_image_url}
                         download
                         title="Download"
+                        onClick={() => void logDownload(render.id)}
                         className="rounded-md p-1.5 text-white/40 hover:bg-white/10 hover:text-white"
                       >
                         <Download className="h-4 w-4" />

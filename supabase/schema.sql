@@ -61,7 +61,7 @@ create table if not exists platform_settings (
   monthly_credits           integer not null default 100,
   annual_price_cents        integer not null default 8999,  -- $89.99
   annual_credits            integer not null default 1500,
-  currency                  text not null default 'usd',
+  currency                  text not null default 'gbp',
   temp_storage_hours        integer not null default 48,
   max_saved_projects        integer not null default 2,
   max_upload_mb             integer not null default 10,
@@ -81,6 +81,21 @@ create table if not exists categories (
   sort_order  integer not null default 0,
   created_at  timestamptz not null default now()
 );
+
+-- Default categories from the client's PRD (marble/granite/quartz/etc.) so
+-- a fresh install isn't an empty list - admins can rename/reorder/disable
+-- freely afterwards.
+insert into categories (name, icon, sort_order) values
+  ('Marble', 'gem', 0),
+  ('Granite', 'mountain', 1),
+  ('Quartz', 'diamond', 2),
+  ('Quartzite', 'hexagon', 3),
+  ('Porcelain', 'square', 4),
+  ('Sintered Stone', 'layers', 5),
+  ('Limestone', 'circle', 6),
+  ('Onyx', 'droplet', 7),
+  ('Travertine', 'waves', 8)
+on conflict (name) do nothing;
 
 create table if not exists brands (
   id           uuid primary key default gen_random_uuid(),
@@ -161,6 +176,19 @@ create table if not exists shares (
 create index if not exists idx_shares_render on shares(render_id);
 
 -- -------------------------------------------------------------------------
+-- DOWNLOAD EVENTS — for the Dashboard/Analytics "Downloads" metrics.
+-- -------------------------------------------------------------------------
+create table if not exists download_events (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null references profiles(id) on delete cascade,
+  render_id   uuid references renders(id) on delete cascade,
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists idx_downloads_render on download_events(render_id);
+create index if not exists idx_downloads_created on download_events(created_at desc);
+
+-- -------------------------------------------------------------------------
 -- SUBSCRIPTIONS — mirrors Stripe subscription state via webhook.
 -- -------------------------------------------------------------------------
 create table if not exists subscriptions (
@@ -207,6 +235,7 @@ alter table stone_colours enable row level security;
 alter table renders enable row level security;
 alter table credit_transactions enable row level security;
 alter table shares enable row level security;
+alter table download_events enable row level security;
 alter table subscriptions enable row level security;
 alter table admin_audit_log enable row level security;
 
@@ -251,6 +280,9 @@ create policy "credit_tx_owner_select" on credit_transactions for select using (
 
 -- Shares: owner writes/reads, admin reads all for analytics.
 create policy "shares_owner_all" on shares for all using (auth.uid() = user_id or is_admin()) with check (auth.uid() = user_id);
+
+-- Download events: owner writes/reads, admin reads all for analytics.
+create policy "downloads_owner_all" on download_events for all using (auth.uid() = user_id or is_admin()) with check (auth.uid() = user_id);
 
 -- Subscriptions: owner + admin read only; writes come from the Stripe webhook via service role.
 create policy "subscriptions_owner_select" on subscriptions for select using (auth.uid() = user_id or is_admin());

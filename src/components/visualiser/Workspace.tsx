@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Upload, Sparkles, Loader2, Search, Download, Bookmark, RotateCcw, Zap } from "lucide-react";
 import type { Brand, Category, StoneColour } from "@/lib/data/stones";
 import { saveRender } from "@/lib/actions/renders";
+import { logDownload } from "@/lib/actions/downloads";
 import { ShareMenu } from "@/components/share/ShareMenu";
 
 type FlatColour = StoneColour & { brandName: string; categoryId: string | null };
@@ -271,6 +272,7 @@ export function Workspace({
               <a
                 href={watermarkedUrl ?? resultUrl}
                 download
+                onClick={() => renderId && void logDownload(renderId)}
                 className="flex items-center gap-2 rounded-lg border border-panel-border bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
               >
                 <Download className="h-4 w-4" /> Download

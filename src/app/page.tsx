@@ -9,7 +9,7 @@ import { FadeIn } from "@/components/motion/FadeIn";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 
 function formatPrice(cents: number, currency: string) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: currency.toUpperCase() }).format(cents / 100);
+  return new Intl.NumberFormat("en-GB", { style: "currency", currency: currency.toUpperCase() }).format(cents / 100);
 }
 
 export default async function Home() {
@@ -22,6 +22,8 @@ export default async function Home() {
 
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-panel-border">
+        <Image src="/hero-kitchen.png" alt="" fill priority className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0d] via-[#0a0a0d]/85 to-[#0a0a0d]/40" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(202,161,93,0.12),_transparent_60%)]" />
         <div className="relative mx-auto max-w-7xl px-6 py-20 sm:py-28">
           <p className="fade-up text-xs font-semibold uppercase tracking-widest text-brand-gold">
@@ -157,19 +159,38 @@ export default async function Home() {
           </FadeIn>
 
           <StaggerReveal className="mx-auto mt-12 grid max-w-4xl grid-cols-1 gap-6 sm:grid-cols-3">
-            <PriceCard title="Starter" price="$0" period="" credits={`${settings.free_credit_amount} credits on signup`} />
+            <PriceCard
+              title="Starter"
+              price={formatPrice(0, settings.currency)}
+              period=""
+              features={[
+                `${settings.free_credit_amount} visualisation credits`,
+                "Upload your own kitchen photos",
+                "Download and share visuals",
+              ]}
+            />
             <PriceCard
               title="Pro"
               price={formatPrice(settings.monthly_price_cents, settings.currency)}
               period="/month"
-              credits={`${settings.monthly_credits} visualisations / month`}
+              features={[
+                `${settings.monthly_credits} visualisations / month`,
+                "Everything in Starter",
+                `Save up to ${settings.max_saved_projects} active projects`,
+                "Priority processing speed",
+              ]}
               highlight
             />
             <PriceCard
               title="Studio"
               price={formatPrice(settings.annual_price_cents, settings.currency)}
               period="/year"
-              credits={`${settings.annual_credits} visualisations / year`}
+              features={[
+                `${settings.annual_credits} visualisations / year`,
+                "Everything in Pro",
+                "Unlimited kitchen uploads",
+                "API integrations & fabricator leads",
+              ]}
             />
           </StaggerReveal>
         </section>
@@ -235,13 +256,13 @@ function PriceCard({
   title,
   price,
   period,
-  credits,
+  features,
   highlight,
 }: {
   title: string;
   price: string;
   period: string;
-  credits: string;
+  features: string[];
   highlight?: boolean;
 }) {
   return (
@@ -262,9 +283,13 @@ function PriceCard({
         {price}
         <span className="text-sm font-normal text-white/40">{period}</span>
       </p>
-      <p className="mt-3 flex items-center gap-1.5 text-sm text-white/60">
-        <Check className="h-4 w-4 text-brand-gold" /> {credits}
-      </p>
+      <ul className="mt-4 flex flex-col gap-2">
+        {features.map((feature) => (
+          <li key={feature} className="flex items-start gap-1.5 text-sm text-white/60">
+            <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-brand-gold" /> {feature}
+          </li>
+        ))}
+      </ul>
       <Link
         href="/register"
         className="mt-5 block rounded-lg bg-gradient-to-b from-brand-gold to-brand-gold-dark px-5 py-2.5 text-center text-sm font-semibold text-black transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_2px_12px_rgba(201,169,110,0.3)]"

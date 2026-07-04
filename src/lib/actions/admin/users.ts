@@ -2,9 +2,19 @@
 
 import { requireAdminContext, logAdminAction, NotAdminError } from "@/lib/actions/admin/guard";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import { getUserRenders, type RenderRow } from "@/lib/data/renders";
 import { revalidatePath } from "next/cache";
 
 export type AdminActionResult = { error: string } | { success: true };
+
+export async function getUserDetail(userId: string): Promise<{ renders: RenderRow[] } | { error: string }> {
+  try {
+    await requireAdminContext();
+    return { renders: await getUserRenders(userId) };
+  } catch (err) {
+    return err instanceof NotAdminError ? { error: err.message } : { error: "Could not load this user's renders." };
+  }
+}
 
 export async function suspendUser(userId: string): Promise<AdminActionResult> {
   try {

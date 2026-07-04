@@ -27,7 +27,7 @@ const FALLBACK_SETTINGS: PlatformSettings = {
   monthly_credits: 100,
   annual_price_cents: 8999,
   annual_credits: 1500,
-  currency: "usd",
+  currency: "gbp",
   temp_storage_hours: 48,
   max_saved_projects: 2,
   max_upload_mb: 10,

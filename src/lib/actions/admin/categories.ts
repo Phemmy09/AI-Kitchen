@@ -30,6 +30,29 @@ export async function createCategory(formData: FormData): Promise<AdminActionRes
   }
 }
 
+export async function updateCategory(
+  categoryId: string,
+  updates: { name?: string; icon?: string },
+): Promise<AdminActionResult> {
+  try {
+    const ctx = await requireAdminContext();
+    const name = updates.name?.trim();
+    if (updates.name !== undefined && !name) return { error: "Category name is required." };
+
+    const { error } = await ctx.supabase
+      .from("categories")
+      .update({ ...(name !== undefined ? { name } : {}), ...(updates.icon !== undefined ? { icon: updates.icon } : {}) })
+      .eq("id", categoryId);
+    if (error) return { error: "Could not update this category." };
+
+    await logAdminAction(ctx, "update_category", "category", categoryId, updates);
+    revalidatePath("/admin/categories");
+    return { success: true };
+  } catch (err) {
+    return fail(err, "Could not update this category.");
+  }
+}
+
 export async function toggleCategoryEnabled(categoryId: string, enabled: boolean): Promise<AdminActionResult> {
   try {
     const ctx = await requireAdminContext();
