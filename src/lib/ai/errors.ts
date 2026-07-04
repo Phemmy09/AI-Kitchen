@@ -5,10 +5,24 @@ export class AIProviderNotConfiguredError extends Error {
   }
 }
 
+export interface GeminiFailureDiagnostics {
+  attempt?: number;
+  finishReason?: string;
+  safetyRatings?: unknown;
+  promptFeedback?: unknown;
+  refusalText?: string;
+}
+
 export class AIGenerationFailedError extends Error {
-  constructor(message = "The AI provider could not generate a render for this image.") {
+  readonly diagnostics?: GeminiFailureDiagnostics;
+
+  constructor(
+    message = "The AI provider could not generate a render for this image.",
+    diagnostics?: GeminiFailureDiagnostics,
+  ) {
     super(message);
     this.name = "AIGenerationFailedError";
+    this.diagnostics = diagnostics;
   }
 }
 
