@@ -7,6 +7,7 @@ import type { RenderRow } from "@/lib/data/renders";
 import { saveRender, unsaveRender, deleteRender } from "@/lib/actions/renders";
 import { logDownload } from "@/lib/actions/downloads";
 import { ShareMenu } from "@/components/share/ShareMenu";
+import { triggerImageDownload } from "@/lib/images/download";
 
 function hoursUntil(iso: string) {
   return (new Date(iso).getTime() - Date.now()) / 3_600_000;
@@ -20,6 +21,16 @@ export function RendersBoard({
   maxSavedProjects: number;
 }) {
   const [isPending, startTransition] = useTransition();
+
+  async function handleDownload(url: string, stoneName: string | undefined, renderId: string) {
+    try {
+      const stonePart = stoneName ? stoneName.toLowerCase().replace(/[^a-z0-9]+/g, "-") : "render";
+      await triggerImageDownload(url, `ratedworktops-${stonePart}.png`);
+      void logDownload(renderId);
+    } catch (err) {
+      console.error("Failed to download image:", err);
+    }
+  }
 
   const saved = renders.filter((r) => r.is_saved);
   const temporary = renders.filter((r) => !r.is_saved);
@@ -65,17 +76,13 @@ export function RendersBoard({
                     <p className="text-xs text-white/40">{new Date(render.created_at).toLocaleDateString()}</p>
                   </div>
                   <div className="flex gap-1">
-                    {render.watermarked_image_url && (
-                      <a
-                        href={render.watermarked_image_url}
-                        download
+                      <button
+                        onClick={() => render.watermarked_image_url && handleDownload(render.watermarked_image_url, render.stone_colours?.name, render.id)}
                         title="Download"
-                        onClick={() => void logDownload(render.id)}
-                        className="rounded-md p-1.5 text-white/40 hover:bg-white/10 hover:text-white"
+                        className="rounded-md p-1.5 text-white/40 hover:bg-white/10 hover:text-white cursor-pointer"
                       >
                         <Download className="h-4 w-4" />
-                      </a>
-                    )}
+                      </button>
                     <button
                       disabled={isPending}
                       onClick={() => startTransition(() => void unsaveRender(render.id))}

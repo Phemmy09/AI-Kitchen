@@ -28,7 +28,7 @@ export async function saveRender(renderId: string): Promise<SaveRenderResult> {
 
   const { error } = await supabase
     .from("renders")
-    .update({ is_saved: true, expires_at: null })
+    .update({ is_saved: true, expires_at: new Date("9999-12-31T23:59:59Z").toISOString() })
     .eq("id", renderId)
     .eq("user_id", user.id);
 

@@ -8,6 +8,7 @@ import type { Brand, Category, StoneColour } from "@/lib/data/stones";
 import { saveRender } from "@/lib/actions/renders";
 import { logDownload } from "@/lib/actions/downloads";
 import { ShareMenu } from "@/components/share/ShareMenu";
+import { triggerImageDownload } from "@/lib/images/download";
 
 type FlatColour = StoneColour & { brandName: string; categoryId: string | null };
 
@@ -111,6 +112,20 @@ export function Workspace({
       else if ("success" in result) setSaveState("saved");
       else setError(result.error);
     });
+  }
+
+  async function handleDownload() {
+    const targetUrl = watermarkedUrl ?? resultUrl;
+    if (!targetUrl) return;
+    try {
+      const stonePart = selectedColour ? selectedColour.name.toLowerCase().replace(/[^a-z0-9]+/g, "-") : "render";
+      await triggerImageDownload(targetUrl, `ratedworktops-${stonePart}.png`);
+      if (renderId) {
+        void logDownload(renderId);
+      }
+    } catch (err) {
+      console.error("Failed to download image:", err);
+    }
   }
 
   const displayImage = resultUrl ?? previewUrl;
@@ -269,14 +284,12 @@ export function Workspace({
                 <Bookmark className="h-4 w-4" />
                 {saveState === "saved" ? "Saved to My Renders" : isSaving ? "Saving..." : "Save to Projects"}
               </button>
-              <a
-                href={watermarkedUrl ?? resultUrl}
-                download
-                onClick={() => renderId && void logDownload(renderId)}
+              <button
+                onClick={handleDownload}
                 className="flex items-center gap-2 rounded-lg border border-panel-border bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
               >
                 <Download className="h-4 w-4" /> Download
-              </a>
+              </button>
               {renderId && <ShareMenu renderId={renderId} imageUrl={watermarkedUrl ?? resultUrl} />}
             </>
           )}
