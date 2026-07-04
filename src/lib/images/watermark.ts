@@ -55,13 +55,8 @@ export async function applyWatermark(imageBuffer: Buffer): Promise<Buffer> {
     </svg>
   `;
 
-  const composite = image.composite([{ input: Buffer.from(svg), top: 0, left: 0 }]);
-
-  if (format === "png") {
-    return composite.png({ compressionLevel: 9 }).toBuffer();
-  }
-  if (format === "webp") {
-    return composite.webp({ quality: 100, lossless: true }).toBuffer();
-  }
-  return composite.jpeg({ quality: 100, chromaSubsampling: "4:4:4" }).toBuffer();
+  return image
+    .composite([{ input: Buffer.from(svg), top: 0, left: 0 }])
+    .jpeg({ quality: 100, chromaSubsampling: "4:4:4" })
+    .toBuffer();
 }

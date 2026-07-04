@@ -25,7 +25,7 @@ export function RendersBoard({
   async function handleDownload(url: string, stoneName: string | undefined, renderId: string) {
     try {
       const stonePart = stoneName ? stoneName.toLowerCase().replace(/[^a-z0-9]+/g, "-") : "render";
-      await triggerImageDownload(url, `ratedworktops-${stonePart}.png`);
+      await triggerImageDownload(url, `ratedworktops-${stonePart}.jpg`);
       void logDownload(renderId);
     } catch (err) {
       console.error("Failed to download image:", err);

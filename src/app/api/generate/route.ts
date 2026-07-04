@@ -106,14 +106,14 @@ export async function POST(request: NextRequest) {
     const ext = image.type === "image/png" ? "png" : "jpg";
     const uploadPath = `${user.id}/${randomUUID()}.${ext}`;
     const resultPath = `${user.id}/${randomUUID()}.${resultExt}`;
-    const watermarkedPath = `${user.id}/${randomUUID()}-wm.${resultExt}`;
+    const watermarkedPath = `${user.id}/${randomUUID()}-wm.jpg`;
 
     const [uploadRes, renderRes, watermarkedRes] = await Promise.all([
       supabase.storage.from("uploads").upload(uploadPath, sourceImage.buffer, { contentType: image.type }),
       supabase.storage.from("renders").upload(resultPath, resultBuffer, { contentType: resultMime }),
       supabase.storage
         .from("renders")
-        .upload(watermarkedPath, watermarkedBuffer, { contentType: resultMime }),
+        .upload(watermarkedPath, watermarkedBuffer, { contentType: "image/jpeg" }),
     ]);
 
     if (uploadRes.error || renderRes.error || watermarkedRes.error) {

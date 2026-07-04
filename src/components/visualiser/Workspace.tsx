@@ -119,7 +119,7 @@ export function Workspace({
     if (!targetUrl) return;
     try {
       const stonePart = selectedColour ? selectedColour.name.toLowerCase().replace(/[^a-z0-9]+/g, "-") : "render";
-      await triggerImageDownload(targetUrl, `ratedworktops-${stonePart}.png`);
+      await triggerImageDownload(targetUrl, `ratedworktops-${stonePart}.jpg`);
       if (renderId) {
         void logDownload(renderId);
       }
